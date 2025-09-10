@@ -3,7 +3,10 @@ require('dotenv').config();
 
 const TOKEN = process.env.DISCORD_BOT_TOKEN;
 
-const afkTimeMins = 0.05
+const COMMAND_CHANNEL_ID = "1415182602452602921";
+
+let afkTimeMins = 0.05;
+let AFK_TIMEOUT = afkTimeMins * 60 * 1000;
 
 const client = new Client({
   intents: [
@@ -17,9 +20,6 @@ const client = new Client({
 // Object to track user activity timestamps
 const userActivity = {};
 
-// Set AFK timeout in milliseconds (3 minutes)
-const AFK_TIMEOUT = afkTimeMins * 60 * 1000;
-
 client.once('clientReady', () => {
   console.log(`Logged in as ${client.user.tag}!`);
 });
@@ -28,6 +28,27 @@ client.once('clientReady', () => {
 client.on('messageCreate', message => {
   if (message.author.bot) return;
   userActivity[message.author.id] = Date.now();
+
+  // Only allow in the command channel
+  if (message.channel.id !== COMMAND_CHANNEL_ID) return;
+
+  const args = message.content.trim().split(/\s+/);
+  const command = args.shift().toLowerCase();
+
+  if (command === "!setafk") {
+    if (args.length === 0 || isNaN(args[0])) {
+      return message.reply("⚠️ Please provide a number in minutes. Example: `!setafk 5`");
+    }
+
+    afkTimeMins = parseFloat(args[0]);
+    AFK_TIMEOUT = afkTimeMins * 60 * 1000;
+
+    message.channel.send(`✅ AFK timeout updated to **${afkTimeMins} minutes**`);
+  }
+
+  if (command === "!getafk") {
+    message.channel.send(`⏱ Current AFK timeout is **${afkTimeMins} minutes**`);
+  }
 });
 
 // Track voice activity
