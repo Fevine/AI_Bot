@@ -5,7 +5,7 @@ const TOKEN = process.env.DISCORD_BOT_TOKEN;
 
 const COMMAND_CHANNEL_ID = "1415182602452602921";
 
-let afkTimeMins = 0.05;
+let afkTimeMins = 3;
 let AFK_TIMEOUT = afkTimeMins * 60 * 1000;
 
 const client = new Client({
@@ -48,6 +48,35 @@ client.on('messageCreate', message => {
 
   if (command === "!getafk") {
     message.channel.send(`⏱ Current AFK timeout is **${afkTimeMins} minutes**`);
+  }
+
+  // 🔹 New command: !afkstatus
+  if (command === "!afkstatus") {
+    const now = Date.now();
+    const guild = message.guild;
+
+    // Only check members in voice channels
+    const members = guild.members.cache.filter(
+      member => member.voice.channel && !member.user.bot
+    );
+
+    if (members.size === 0) {
+      return message.channel.send("No active members in voice channels.");
+    }
+
+    const statusList = members.map(member => {
+      const lastActive = userActivity[member.id] || 0;
+      const inactiveTime = now - lastActive;
+      const remaining = AFK_TIMEOUT - inactiveTime;
+
+      // Format remaining time nicely
+      const mins = Math.floor(remaining / 60000);
+      const secs = Math.floor((remaining % 60000) / 1000);
+
+      return `${member.user.username} — ${remaining > 0 ? `${mins}m ${secs}s until AFK` : "AFK soon!"}`;
+    });
+
+    message.channel.send("⏱ **AFK Status:**\n" + statusList.join("\n"));
   }
 });
 
