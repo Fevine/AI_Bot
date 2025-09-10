@@ -3,9 +3,19 @@ require('dotenv').config();
 
 const TOKEN = process.env.DISCORD_BOT_TOKEN;
 
-const COMMAND_CHANNEL_ID = "1415182602452602921";
+const deathMessages = [
+  "fell asleep!",
+  "rage quit!",
+  "went AFK forever...",
+  "has been teleported to the void!",
+  "took a nap in voice chat!",
+  "disappeared mysteriously..."
+];
 
-let afkTimeMins = 3;
+const COMMAND_CHANNEL_ID = "1415182602452602921";
+const AFK_LOG_CHANNEL_ID = "1415190744108630017"; // replace with your #afk-logs channel ID
+
+let afkTimeMins = 0.1;
 let AFK_TIMEOUT = afkTimeMins * 60 * 1000;
 
 const client = new Client({
@@ -104,13 +114,13 @@ setInterval(async () => {
         if (member.voice.channel.id !== afkChannel.id) {
           member.voice.setChannel(afkChannel).catch(console.error);
 
-          // 🔹 Send a message in a text channel (e.g., the first available)
-          const defaultChannel = guild.systemChannel || guild.channels.cache.find(
-            c => c.isTextBased() && c.permissionsFor(guild.members.me).has("SendMessages")
-          );
+          // Pick a random death message
+          const randomMsg = deathMessages[Math.floor(Math.random() * deathMessages.length)];
 
-          if (defaultChannel) {
-            defaultChannel.send(`${member.user.globalName} died!`);
+          // Send in AFK log channel
+          const logChannel = guild.channels.cache.get(AFK_LOG_CHANNEL_ID);
+          if (logChannel && logChannel.isTextBased()) {
+            logChannel.send(`💤 ${member.user.globalName || member.user.username} ${randomMsg}`);
           }
         }
       }
