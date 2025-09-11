@@ -1,5 +1,11 @@
 // src/commands/afkCommands.js
-const { setAfkTime, getAfkTime, userActivity } = require("../utils/afkManager");
+const {
+  setAfkTime,
+  getAfkTime,
+  userActivity,
+  toggleAiDeaths,
+  isAiDeathsEnabled
+} = require("../utils/afkManager");
 
 function handleCommands(message, COMMAND_CHANNEL_ID) {
   if (message.author.bot) return;
@@ -43,6 +49,18 @@ function handleCommands(message, COMMAND_CHANNEL_ID) {
     });
 
     message.channel.send("⏱ **AFK Status:**\n" + statusList.join("\n"));
+  }
+
+  if (command === "!ai-deaths") {
+    if (!args[0] || !["on", "off"].includes(args[0].toLowerCase())) {
+      return message.reply("⚠️ Usage: `!ai-deaths on` or `!ai-deaths off`");
+    }
+
+    const newState = args[0].toLowerCase() === "on";
+    toggleAiDeaths(newState);
+    message.channel.send(
+      `🤖 AI death messages are now **${newState ? "enabled" : "disabled"}**`
+    );
   }
 }
 
