@@ -1,5 +1,6 @@
 // src/utils/afkManager.js
 const deathMessages = require('./deathMessages');
+const { getDeathMessage } = require('./deathMessagesOllama');
 
 let afkTimeMins = 0.1;
 let AFK_TIMEOUT = afkTimeMins * 60 * 1000;
@@ -19,7 +20,7 @@ function getAfkTime() {
 async function checkAfk(client, AFK_LOG_CHANNEL_ID) {
   const now = Date.now();
 
-  client.guilds.cache.forEach(guild => {
+  client.guilds.cache.forEach(async guild => {
     const afkChannel = guild.afkChannel;
     if (!afkChannel) return;
 
@@ -27,20 +28,21 @@ async function checkAfk(client, AFK_LOG_CHANNEL_ID) {
       member => member.voice.channel && !member.user.bot
     );
 
-    members.forEach(member => {
+    for (const member of members.values()) {
       const lastActive = userActivity[member.id] || 0;
       if (now - lastActive > AFK_TIMEOUT) {
         if (member.voice.channel.id !== afkChannel.id) {
-          member.voice.setChannel(afkChannel).catch(console.error);
+          await member.voice.setChannel(afkChannel).catch(console.error);
 
-          const randomMsg = deathMessages[Math.floor(Math.random() * deathMessages.length)];
+          const msg = await getDeathMessage(member.user.username);
+
           const logChannel = guild.channels.cache.get(AFK_LOG_CHANNEL_ID);
           if (logChannel && logChannel.isTextBased()) {
-            logChannel.send(`💤 ${member.user.globalName || member.user.username} ${randomMsg}`);
+            logChannel.send(`💤 ${member.user.globalName || member.user.username} ${msg}`);
           }
         }
       }
-    });
+    }
   });
 }
 
