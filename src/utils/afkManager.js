@@ -1,6 +1,5 @@
 // src/utils/afkManager.js
-const deathMessages = require('./deathMessages');
-const { getDeathMessage } = require('./deathMessagesOllama');
+const { getDeathMessage } = require("./deathMessagesOllama");
 
 let afkTimeMins = 0.1;
 let AFK_TIMEOUT = afkTimeMins * 60 * 1000;
@@ -16,7 +15,7 @@ function getAfkTime() {
   return afkTimeMins;
 }
 
-// Call periodically to move inactive users
+// Check inactive members and move them to AFK
 async function checkAfk(client, AFK_LOG_CHANNEL_ID) {
   const now = Date.now();
 

@@ -1,5 +1,5 @@
 // src/commands/afkCommands.js
-const { setAfkTime, getAfkTime, userActivity } = require('../utils/afkManager');
+const { setAfkTime, getAfkTime, userActivity } = require("../utils/afkManager");
 
 function handleCommands(message, COMMAND_CHANNEL_ID) {
   if (message.author.bot) return;
@@ -12,9 +12,8 @@ function handleCommands(message, COMMAND_CHANNEL_ID) {
 
   if (command === "!setafk") {
     if (args.length === 0 || isNaN(args[0])) {
-      return message.reply("⚠️ Please provide a number in minutes. Example: `!setafk 5`");
+      return message.reply("⚠️ Provide a number in minutes. Example: `!setafk 5`");
     }
-
     setAfkTime(parseFloat(args[0]));
     message.channel.send(`✅ AFK timeout updated to **${getAfkTime()} minutes**`);
   }

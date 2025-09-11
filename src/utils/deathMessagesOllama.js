@@ -8,34 +8,20 @@ async function getDeathMessage(username) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        model: "llama3", // change to the model you pulled
+        model: "llama3",
         prompt: `Create a short, funny "death message" for when ${username} goes AFK in Discord. Keep it under 10 words.`,
         stream: false,
       }),
     });
 
-    if (!response.ok) {
-      throw new Error(`Ollama API error: ${response.statusText}`);
-    }
-
+    if (!response.ok) throw new Error(`Ollama API error: ${response.statusText}`);
     const data = await response.json();
-
-    // Ollama returns an object with `response`
     const msg = data.response.trim();
 
-    // Make sure it's not empty
-    if (!msg) {
-      const randomMsg = fallbackMessages[Math.floor(Math.random() * fallbackMessages.length)];
-      return randomMsg;
-    }
-
-    return msg;
+    return msg || fallbackMessages[Math.floor(Math.random() * fallbackMessages.length)];
   } catch (err) {
-    console.error("Ollama message error:", err);
-
-    // fallback to static messages
-    const randomMsg = fallbackMessages[Math.floor(Math.random() * fallbackMessages.length)];
-    return randomMsg;
+    console.error("Ollama error:", err);
+    return fallbackMessages[Math.floor(Math.random() * fallbackMessages.length)];
   }
 }
 

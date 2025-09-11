@@ -1,8 +1,8 @@
 // src/index.js
-require('dotenv').config();
-const { Client, GatewayIntentBits } = require('discord.js');
-const { handleCommands } = require('./commands/afkCommands');
-const { userActivity, checkAfk } = require('./utils/afkManager');
+require("dotenv").config();
+const { Client, GatewayIntentBits } = require("discord.js");
+const { handleCommands } = require("./commands/afkCommands");
+const { userActivity, checkAfk } = require("./utils/afkManager");
 
 const TOKEN = process.env.DISCORD_BOT_TOKEN;
 const COMMAND_CHANNEL_ID = "1415182602452602921";
@@ -17,15 +17,13 @@ const client = new Client({
   ]
 });
 
-client.once('clientReady', () => {
+client.once("clientReady", () => {
   console.log(`✅ Logged in as ${client.user.tag}!`);
 });
 
-client.on('messageCreate', message => {
-  handleCommands(message, COMMAND_CHANNEL_ID);
-});
+client.on("messageCreate", message => handleCommands(message, COMMAND_CHANNEL_ID));
 
-client.on('voiceStateUpdate', (oldState, newState) => {
+client.on("voiceStateUpdate", (oldState, newState) => {
   userActivity[newState.id] = Date.now();
 });
 
