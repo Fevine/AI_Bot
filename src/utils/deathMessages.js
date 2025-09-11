@@ -1,9 +1,28 @@
-// src/utils/deathMessages.js
 module.exports = [
   "fell asleep!",
   "rage quit!",
   "went AFK forever...",
   "has been teleported to the void!",
   "took a nap in voice chat!",
-  "disappeared mysteriously..."
+  "disappeared mysteriously...",
+  "was last seen talking to a wall!",
+  "entered spectator mode!",
+  "got lost in the sauce!",
+  "unplugged their headset!",
+  "went to make popcorn and never came back!",
+  "is now practicing the art of invisibility!",
+  "alt+F4’d their way out!",
+  "vanished like a ninja in the night!",
+  "went to feed their pet rock!",
+  "got stuck in a loading screen!",
+  "took the red pill… and logged off!",
+  "went AFK to touch grass 🌱",
+  "rage quit reality!",
+  "fell into the shadow realm!",
+  "got caught by the AFK police!",
+  "ran out of gamer fuel!",
+  "started buffering… please wait!",
+  "pressed the snooze button IRL!",
+  "found the secret AFK dimension!",
+  "took a wrong turn into idle town!"
 ];
